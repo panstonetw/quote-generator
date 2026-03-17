@@ -1,9 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { DatePicker, InputGroup, Portal } from "@chakra-ui/react";
 import { LuCalendar, LuChevronsUpDown } from "react-icons/lu";
 
 export const CustomDatePicker = ({ label, bg, borderRadius, locale }) => {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null;
+    }
+
     const period = [
         { view: "day", element: <DatePicker.DayTable /> },
         { view: "month", element: <DatePicker.MonthTable /> },
@@ -18,8 +29,13 @@ export const CustomDatePicker = ({ label, bg, borderRadius, locale }) => {
     }
 
     return (
-        <DatePicker.Root locale={locale ?? "zh-TW"} format={format} maxWidth="20rem" placeholder="yyyy-mm-dd">
-            { label && <DatePicker.Label>{label}</DatePicker.Label> }
+        <DatePicker.Root
+            locale={locale ?? "zh-TW"}
+            format={format}
+            maxWidth="20rem"
+            placeholder="yyyy-mm-dd"
+        >
+            {label && <DatePicker.Label>{label}</DatePicker.Label>}
             <InputGroup
                 as={DatePicker.Control}
                 startElement={<LuCalendar />}
