@@ -1,10 +1,32 @@
 import React from 'react';
-import { FileUpload, Icon, Text } from "@chakra-ui/react";
-import { Upload } from "lucide-react";
+import { FileUpload, Float, Icon, Text, useFileUploadContext } from "@chakra-ui/react";
+import { Upload, X } from "lucide-react";
 
-export const CustomFileUpload = ({ text, supportType, ...props }) => {
+const FileUploadList = () => {
+    const fileUpload = useFileUploadContext();
+    const files = fileUpload.acceptedFiles;
+    if (files.length === 0) {
+        return null;
+    }
+
     return (
-        <FileUpload.Root alignItems="stretch" {...props}>
+        <FileUpload.ItemGroup>
+            {files.map((file) => (
+                <FileUpload.Item w="auto" boxSize="20" p="2" file={file} key={file.name}>
+                    <FileUpload.ItemPreviewImage />
+                    <Float placement="top-end">
+                        <FileUpload.ItemDeleteTrigger boxSize="4" layerStyle="fill.solid">
+                            <X />
+                        </FileUpload.ItemDeleteTrigger>
+                    </Float>
+                </FileUpload.Item>
+            ))}
+        </FileUpload.ItemGroup>
+    )
+}
+export const CustomFileUpload = ({ text, supportType, onChange, value, ...props }) => {
+    return (
+        <FileUpload.Root alignItems="stretch" {...props} onFileChange={details => onChange(details.acceptedFiles)}>
             <FileUpload.HiddenInput />
             <FileUpload.Dropzone>
                 <Icon size="md" color="fg.muted">
@@ -15,7 +37,7 @@ export const CustomFileUpload = ({ text, supportType, ...props }) => {
                     <Text color="fg.muted">{supportType}</Text>
                 </FileUpload.DropzoneContent>
             </FileUpload.Dropzone>
-            <FileUpload.List />
+            <FileUploadList />
         </FileUpload.Root>
     );
 };
