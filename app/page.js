@@ -52,9 +52,12 @@ import QuotePreviewPanel from "@/components/quote/QuotePreviewPanel";
 import QuoteBasicInfoSection from "@/components/quote/QuoteBasicInfoSection";
 import QuoteItemsSection from "@/components/quote/QuoteItemsSection";
 import QuoteExtraInfoSection from "@/components/quote/QuoteExtraInfoSection";
+import { FormProvider, useForm } from 'react-hook-form';
 
 export default function QuoteGeneratorChakra() {
     const [open, setOpen] = useState(false);
+    const methods = useForm();
+
     // 色彩配置
     const formBg = {base: 'gray.200'};
     const inputBg = {base: 'white'};
@@ -91,25 +94,29 @@ export default function QuoteGeneratorChakra() {
                             </Tabs.Trigger>
                         </Tabs.List>
                         <Tabs.Content value="quote" p={2}>
-                            <SimpleGrid columns={{base: 1, lg: 2}} spacing={6} templateColumns={{lg: '1.2fr 1fr'}}
-                                        gap={6}>
-                                <VStack spacing={6} align="stretch" flex={1}>
-                                    <QuoteBasicInfoSection
-                                        open={open}
-                                        setOpen={setOpen}
-                                        formBg={formBg}
-                                        inputBg={inputBg}
-                                        borderColor={borderColor}
-                                    />
+                            <FormProvider {...methods}>
+                                <form>
+                                    <SimpleGrid columns={{base: 1, lg: 2}} spacing={6} templateColumns={{lg: '1.2fr 1fr'}}
+                                                gap={6}>
+                                        <VStack spacing={6} align="stretch" flex={1}>
+                                            <QuoteBasicInfoSection
+                                                open={open}
+                                                setOpen={setOpen}
+                                                formBg={formBg}
+                                                inputBg={inputBg}
+                                                borderColor={borderColor}
+                                            />
 
-                                    <QuoteItemsSection />
+                                            <QuoteItemsSection />
 
-                                    <QuoteExtraInfoSection inputBg={inputBg} />                                                             
-                                </VStack>
+                                            <QuoteExtraInfoSection inputBg={inputBg} />
+                                        </VStack>
 
-                                {/* 報價單預覽 */}
-                                <QuotePreviewPanel columns={columns} data={data} />
-                            </SimpleGrid>
+                                        {/* 報價單預覽 */}
+                                        <QuotePreviewPanel columns={columns} data={data} />
+                                    </SimpleGrid>
+                                </form>
+                            </FormProvider>
                         </Tabs.Content>
                     </Tabs.Root>
                 </HStack>
