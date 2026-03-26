@@ -22,6 +22,7 @@ import {
   FileText,
   Mail,
   MapPin,
+  PanelLeftClose,
   PanelRightClose,
   Phone,
   ScrollText,
@@ -31,6 +32,8 @@ import { LuUpload } from "react-icons/lu";
 import { CustomDatePicker } from "@/components/form/CustomDatePicker";
 
 export default function QuoteBasicInfoSection({
+  displayPreview,
+  handleDisplayPreview,
   open,
   setOpen,
   formBg,
@@ -54,9 +57,17 @@ export default function QuoteBasicInfoSection({
           <Heading size="xl">基本資料</Heading>
         </HStack>
 
-        <Button variant="link" size="sm" color="gray.500">
-          <PanelRightClose />
-          隱藏預覽
+        <Button variant="link" size="sm" color="gray.500" onClick={handleDisplayPreview}>
+          {
+            displayPreview ?
+                <>
+                  <PanelRightClose />
+                  隱藏預覽
+                </> : <>
+                  <PanelLeftClose />
+                  顯示預覽
+                </>
+          }
         </Button>
       </Flex>
 
