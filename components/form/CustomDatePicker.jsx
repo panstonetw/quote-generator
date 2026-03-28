@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DatePicker, InputGroup, Portal } from "@chakra-ui/react";
 import { LuCalendar, LuChevronsUpDown } from "react-icons/lu";
 
-export const CustomDatePicker = ({ label, bg, borderRadius, locale }) => {
+export const CustomDatePicker = ({ label, bg, borderRadius, locale, onChange, ...props }) => {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -34,6 +34,10 @@ export const CustomDatePicker = ({ label, bg, borderRadius, locale }) => {
             format={format}
             maxWidth="20rem"
             placeholder="yyyy-mm-dd"
+            {...props}
+            onValueChange={(details) => {
+                onChange(details.value);
+            }}
         >
             {label && <DatePicker.Label>{label}</DatePicker.Label>}
             <InputGroup
