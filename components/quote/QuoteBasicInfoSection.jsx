@@ -30,7 +30,8 @@ import {
 } from "lucide-react";
 import { LuUpload } from "react-icons/lu";
 import { CustomDatePicker } from "@/components/form/CustomDatePicker";
-import {useState} from "react";
+import { useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 
 export default function QuoteBasicInfoSection({
   displayPreview,
@@ -40,6 +41,7 @@ export default function QuoteBasicInfoSection({
   borderColor,
 }) {
   const [displayCustomer, setDisplayCustomer] = useState(false);
+  const { register, control } = useFormContext();
 
   return (
     <Box borderRadius="2xl" border="1px" borderColor={borderColor} shadow="sm" overflow="hidden">
@@ -87,7 +89,7 @@ export default function QuoteBasicInfoSection({
                 <Text as="span" color="red.500">*</Text>
               </Text>
               <InputGroup startElement={<Building2 size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入客戶名稱" borderRadius="xl" />
+                <Input bg={inputBg} placeholder="請輸入客戶名稱" borderRadius="xl" {...register("customerName", { required: "必須填寫" })} />
               </InputGroup>
             </Box>
 
@@ -96,7 +98,7 @@ export default function QuoteBasicInfoSection({
                 統一編號
               </Text>
               <InputGroup startElement={<FileText size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入統一編號" borderRadius="xl" />
+                <Input bg={inputBg} placeholder="請輸入統一編號" borderRadius="xl" {...register("customerTaxId")} />
               </InputGroup>
             </Box>
           </SimpleGrid>
@@ -119,10 +121,9 @@ export default function QuoteBasicInfoSection({
                 <Box>
                   <Text mb={2} fontSize="sm" fontWeight="medium">
                     客戶 Logo
-                    <Text as="span" color="red.500">*</Text>
                   </Text>
 
-                  <FileUpload.Root maxW="4xl" alignItems="stretch" maxFiles={10}>
+                  <FileUpload.Root maxW="4xl" alignItems="stretch" maxFiles={10} {...register("customerLogo")}>
                     <FileUpload.HiddenInput />
                     <FileUpload.Dropzone>
                       <Icon size="md" color="fg.muted">
@@ -144,7 +145,7 @@ export default function QuoteBasicInfoSection({
                     聯絡人
                   </Text>
                   <InputGroup startElement={<User size={16} />}>
-                    <Input bg={inputBg} placeholder="請輸入聯絡人" borderRadius="xl" />
+                    <Input bg={inputBg} placeholder="請輸入聯絡人" borderRadius="xl" {...register("customerContact")} />
                   </InputGroup>
                 </Box>
 
@@ -153,7 +154,7 @@ export default function QuoteBasicInfoSection({
                     連絡電話
                   </Text>
                   <InputGroup startElement={<Phone size={16} />}>
-                    <Input bg={inputBg} placeholder="請輸入連絡電話" borderRadius="xl" />
+                    <Input bg={inputBg} placeholder="請輸入連絡電話" borderRadius="xl" {...register("customerPhone")} />
                   </InputGroup>
                 </Box>
               </SimpleGrid>
@@ -164,7 +165,7 @@ export default function QuoteBasicInfoSection({
                     Email
                   </Text>
                   <InputGroup startElement={<Mail size={16} />}>
-                    <Input bg={inputBg} placeholder="請輸入Email" borderRadius="xl" />
+                    <Input bg={inputBg} placeholder="請輸入Email" borderRadius="xl" {...register("customerEmail")} />
                   </InputGroup>
                 </Box>
 
@@ -173,7 +174,7 @@ export default function QuoteBasicInfoSection({
                     地址
                   </Text>
                   <InputGroup startElement={<MapPin size={16} />}>
-                    <Input bg={inputBg} placeholder="請輸入地址" borderRadius="xl" />
+                    <Input bg={inputBg} placeholder="請輸入地址" borderRadius="xl" {...register("customerAddress")} />
                   </InputGroup>
                 </Box>
               </SimpleGrid>
@@ -195,7 +196,7 @@ export default function QuoteBasicInfoSection({
                 <Text as="span" color="red.500">*</Text>
               </Text>
               <InputGroup startElement={<User size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入報價人員" borderRadius="xl" />
+                <Input bg={inputBg} placeholder="請輸入報價人員" borderRadius="xl" {...register("quotationName", { required: "必須填寫" })} />
               </InputGroup>
             </Box>
 
@@ -204,7 +205,7 @@ export default function QuoteBasicInfoSection({
                 統一編號
               </Text>
               <InputGroup startElement={<FileText size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入統一編號" borderRadius="xl" />
+                <Input bg={inputBg} placeholder="請輸入統一編號" borderRadius="xl" {...register("quotationTaxId")} />
               </InputGroup>
             </Box>
 
@@ -214,7 +215,7 @@ export default function QuoteBasicInfoSection({
                 <Text as="span" color="red.500">*</Text>
               </Text>
               <InputGroup startElement={<Mail size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入Email" borderRadius="xl" />
+                <Input bg={inputBg} placeholder="請輸入Email" borderRadius="xl" {...register("quotationEmail", { required: "必須填寫" })} />
               </InputGroup>
             </Box>
 
@@ -224,18 +225,28 @@ export default function QuoteBasicInfoSection({
               </Text>
               <HStack>
                 <InputGroup startElement={<Phone size={16} />}>
-                  <Input bg={inputBg} placeholder="請輸入聯絡電話" borderRadius="xl" />
+                  <Input bg={inputBg} placeholder="請輸入聯絡電話" borderRadius="xl" {...register(("quotationPhone"))} />
                 </InputGroup>
-                <Input bg={inputBg} placeholder="分機" w="24" borderRadius="xl" />
+                <Input bg={inputBg} placeholder="分機" w="24" borderRadius="xl" {...register("quotationPhoneExt")} />
               </HStack>
             </Box>
 
             <Box p={1}>
-              <CustomDatePicker label="報價日期" bg={inputBg} borderRadius="xl" />
+              <Controller
+                  name="quotationDate"
+                  control={control}
+                  render={({ field }) => (
+                      <CustomDatePicker label="報價日期" bg={inputBg} borderRadius="xl" {...field} />
+                  )} />
             </Box>
 
             <Box p={1}>
-              <CustomDatePicker label="有效日期" bg={inputBg} borderRadius="xl" />
+              <Controller
+                  name="effectiveDate"
+                  control={control}
+                  render={({ field }) => (
+                      <CustomDatePicker label="有效日期" bg={inputBg} borderRadius="xl" {...field} />
+                  )}  />
             </Box>
           </SimpleGrid>
         </Box>
