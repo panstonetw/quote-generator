@@ -31,7 +31,7 @@ import {
 import { LuUpload } from "react-icons/lu";
 import { CustomDatePicker } from "@/components/form/CustomDatePicker";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 
 export default function QuoteBasicInfoSection({
   displayPreview,
@@ -41,7 +41,7 @@ export default function QuoteBasicInfoSection({
   borderColor,
 }) {
   const [displayCustomer, setDisplayCustomer] = useState(false);
-  const { register, control } = useForm();
+  const { register, control } = useFormContext();
 
   return (
     <Box borderRadius="2xl" border="1px" borderColor={borderColor} shadow="sm" overflow="hidden">
