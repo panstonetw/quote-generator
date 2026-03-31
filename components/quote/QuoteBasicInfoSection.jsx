@@ -151,10 +151,10 @@ export default function QuoteBasicInfoSection({
 
                 <Box p={1}>
                   <Text mb={2} fontSize="sm" fontWeight="medium">
-                    連絡電話
+                    聯絡電話
                   </Text>
                   <InputGroup startElement={<Phone size={16} />}>
-                    <Input bg={inputBg} placeholder="請輸入連絡電話" borderRadius="xl" {...register("customerPhone")} />
+                    <Input bg={inputBg} placeholder="請輸入聯絡電話" borderRadius="xl" {...register("customerPhone")} />
                   </InputGroup>
                 </Box>
               </SimpleGrid>
@@ -196,7 +196,7 @@ export default function QuoteBasicInfoSection({
                 <Text as="span" color="red.500">*</Text>
               </Text>
               <InputGroup startElement={<User size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入報價人員" borderRadius="xl" {...register("quotationName", { required: "必須填寫" })} />
+                <Input bg={inputBg} placeholder="請輸入報價人員" borderRadius="xl" {...register("quoteName", { required: "必須填寫" })} />
               </InputGroup>
             </Box>
 
@@ -205,7 +205,7 @@ export default function QuoteBasicInfoSection({
                 統一編號
               </Text>
               <InputGroup startElement={<FileText size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入統一編號" borderRadius="xl" {...register("quotationTaxId")} />
+                <Input bg={inputBg} placeholder="請輸入統一編號" borderRadius="xl" {...register("quoteTaxId")} />
               </InputGroup>
             </Box>
 
@@ -215,7 +215,7 @@ export default function QuoteBasicInfoSection({
                 <Text as="span" color="red.500">*</Text>
               </Text>
               <InputGroup startElement={<Mail size={16} />}>
-                <Input bg={inputBg} placeholder="請輸入Email" borderRadius="xl" {...register("quotationEmail", { required: "必須填寫" })} />
+                <Input bg={inputBg} placeholder="請輸入Email" borderRadius="xl" {...register("quoteEmail", { required: "必須填寫" })} />
               </InputGroup>
             </Box>
 
@@ -225,15 +225,15 @@ export default function QuoteBasicInfoSection({
               </Text>
               <HStack>
                 <InputGroup startElement={<Phone size={16} />}>
-                  <Input bg={inputBg} placeholder="請輸入聯絡電話" borderRadius="xl" {...register(("quotationPhone"))} />
+                  <Input bg={inputBg} placeholder="請輸入聯絡電話" borderRadius="xl" {...register(("quotePhone"))} />
                 </InputGroup>
-                <Input bg={inputBg} placeholder="分機" w="24" borderRadius="xl" {...register("quotationPhoneExt")} />
+                <Input bg={inputBg} placeholder="分機" w="24" borderRadius="xl" {...register("quotePhoneExt")} />
               </HStack>
             </Box>
 
             <Box p={1}>
               <Controller
-                  name="quotationDate"
+                  name="quoteDate"
                   control={control}
                   render={({ field }) => (
                       <CustomDatePicker label="報價日期" bg={inputBg} borderRadius="xl" {...field} />
