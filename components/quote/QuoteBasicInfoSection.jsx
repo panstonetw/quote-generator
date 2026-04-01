@@ -41,6 +41,7 @@ export default function QuoteBasicInfoSection({
   borderColor,
 }) {
   const [displayCustomer, setDisplayCustomer] = useState(false);
+  const [displayQuote, setDisplayQuote] = useState(false);
   const { register, control } = useFormContext();
 
   return (
@@ -153,9 +154,12 @@ export default function QuoteBasicInfoSection({
                   <Text mb={2} fontSize="sm" fontWeight="medium">
                     聯絡電話
                   </Text>
-                  <InputGroup startElement={<Phone size={16} />}>
-                    <Input bg={inputBg} placeholder="請輸入聯絡電話" borderRadius="xl" {...register("customerPhone")} />
-                  </InputGroup>
+                  <HStack>
+                    <InputGroup startElement={<Phone size={16} />}>
+                      <Input bg={inputBg} placeholder="請輸入聯絡電話" borderRadius="xl" {...register("customerPhone")} />
+                    </InputGroup>
+                    <Input bg={inputBg} placeholder="分機" w="24" borderRadius="xl" {...register("customerPhoneExt")} />
+                  </HStack>
                 </Box>
               </SimpleGrid>
 
@@ -208,7 +212,9 @@ export default function QuoteBasicInfoSection({
                 <Input bg={inputBg} placeholder="請輸入統一編號" borderRadius="xl" {...register("quoteTaxId")} />
               </InputGroup>
             </Box>
+          </SimpleGrid>
 
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
             <Box p={1}>
               <Text mb={2} fontSize="sm" fontWeight="medium">
                 Email
@@ -230,7 +236,78 @@ export default function QuoteBasicInfoSection({
                 <Input bg={inputBg} placeholder="分機" w="24" borderRadius="xl" {...register("quotePhoneExt")} />
               </HStack>
             </Box>
+          </SimpleGrid>
 
+          <Collapsible.Root>
+            <Collapsible.Trigger padding="2">
+              <HStack
+                  mb={5}
+                  fontSize="lg"
+                  fontWeight="semibold"
+                  onClick={() => setDisplayQuote(prev => !prev)}
+              >
+                { displayQuote ? <ChevronUp /> : <ChevronDown /> }
+                <Text>LOGO、發票章、地址</Text>
+              </HStack>
+            </Collapsible.Trigger>
+
+            <Collapsible.Content>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+                <Box>
+                  <Text mb={2} fontSize="sm" fontWeight="medium">
+                    公司 Logo
+                  </Text>
+
+                  <FileUpload.Root maxW="4xl" alignItems="stretch" maxFiles={10} {...register("quoteLogo")}>
+                    <FileUpload.HiddenInput />
+                    <FileUpload.Dropzone>
+                      <Icon size="md" color="fg.muted">
+                        <LuUpload />
+                      </Icon>
+                      <FileUpload.DropzoneContent>
+                        <Text color="fg.muted">上傳公司 Logo</Text>
+                        <Text color="fg.muted">支援 PNG、JPG、GIF</Text>
+                      </FileUpload.DropzoneContent>
+                    </FileUpload.Dropzone>
+                    <FileUpload.List />
+                  </FileUpload.Root>
+                </Box>
+
+                <Box>
+                  <Text mb={2} fontSize="sm" fontWeight="medium">
+                    公司發票章
+                  </Text>
+
+                  <FileUpload.Root maxW="4xl" alignItems="stretch" maxFiles={10} {...register("quoteStamp")}>
+                    <FileUpload.HiddenInput />
+                    <FileUpload.Dropzone>
+                      <Icon size="md" color="fg.muted">
+                        <LuUpload />
+                      </Icon>
+                      <FileUpload.DropzoneContent>
+                        <Text color="fg.muted">上傳公司發票章</Text>
+                        <Text color="fg.muted">支援 PNG、JPG、GIF</Text>
+                      </FileUpload.DropzoneContent>
+                    </FileUpload.Dropzone>
+                    <FileUpload.List />
+                  </FileUpload.Root>
+                </Box>
+              </SimpleGrid>
+
+              <SimpleGrid spacing={4}>
+                <Box p={1}>
+                  <Text mb={2} fontSize="sm" fontWeight="medium">
+                    地址
+                  </Text>
+                  <InputGroup startElement={<MapPin size={16} />}>
+                    <Input bg={inputBg} placeholder="請輸入地址" borderRadius="xl" {...register("quoteAddress")} />
+                  </InputGroup>
+                </Box>
+              </SimpleGrid>
+            </Collapsible.Content>
+          </Collapsible.Root>
+
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
             <Box p={1}>
               <Controller
                   name="quoteDate"
