@@ -1,8 +1,10 @@
 import React from 'react';
-import { FileUpload, Float, Icon, Text } from "@chakra-ui/react";
+import { FileUpload, Float, Icon, Text, useFileUploadContext } from "@chakra-ui/react";
 import { Upload, X } from "lucide-react";
 
-const FileUploadList = ({ files = [] }) => {
+const FileUploadList = () => {
+    const fileUpload = useFileUploadContext();
+    const files = fileUpload.acceptedFiles;
     if (files.length === 0) {
         return null;
     }
@@ -14,9 +16,9 @@ const FileUploadList = ({ files = [] }) => {
             flexWrap="wrap"
             gap={4}
         >
-            {files.map((file) => (
+            {files.map((file, index) => (
                 <FileUpload.Item
-                    key={`${file.name}-${file.lastModified}`}
+                    key={`${file.name}-${index}`}
                     w="auto"
                     boxSize="20"
                     p="2"
@@ -34,17 +36,9 @@ const FileUploadList = ({ files = [] }) => {
     )
 }
 
-export const CustomFileUpload = ({ text, supportType, onChange, value, ...props }) => {
-    const handleFileChange = (details) => {
-        const fileMap = new Map();
-        details.acceptedFiles.forEach(file => {
-            fileMap.set(`${file.name}-${file.lastModified}`, file);
-        });
-        onChange(Array.from(fileMap.values()));
-    }
-
+export const CustomFileUpload = ({ text, supportType, onChange, ...props }) => {
     return (
-        <FileUpload.Root alignItems="stretch" {...props} onFileChange={handleFileChange}>
+        <FileUpload.Root alignItems="stretch" maxFiles={5} {...props} onFileChange={details => onChange(details.acceptedFiles)}>
             <FileUpload.HiddenInput />
             <FileUpload.Dropzone>
                 <Icon size="md" color="fg.muted">
@@ -55,7 +49,7 @@ export const CustomFileUpload = ({ text, supportType, onChange, value, ...props 
                     <Text color="fg.muted">{supportType}</Text>
                 </FileUpload.DropzoneContent>
             </FileUpload.Dropzone>
-            <FileUploadList files={value} />
+            <FileUploadList />
         </FileUpload.Root>
     );
 };
