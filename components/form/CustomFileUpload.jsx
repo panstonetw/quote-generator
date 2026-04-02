@@ -38,7 +38,7 @@ const FileUploadList = () => {
 
 export const CustomFileUpload = ({ text, supportType, onChange, ...props }) => {
     return (
-        <FileUpload.Root alignItems="stretch" maxFiles={5} {...props} onFileChange={details => onChange(details.acceptedFiles)}>
+        <FileUpload.Root alignItems="stretch" onFileChange={details => onChange(details.acceptedFiles)} {...props}>
             <FileUpload.HiddenInput />
             <FileUpload.Dropzone>
                 <Icon size="md" color="fg.muted">
