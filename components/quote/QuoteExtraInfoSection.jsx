@@ -12,8 +12,11 @@ import {
 } from "@chakra-ui/react";
 import { LuShoppingCart } from "react-icons/lu";
 import { CustomCheckbox } from "@/components/form/CustomCheckbox";
+import {Controller, useFormContext} from "react-hook-form";
 
 export default function QuoteExtraInfoSection({ inputBg, borderColor }) {
+  const { register, control } = useFormContext();
+
   return (
     <Box mt={2} borderRadius="2xl" border="1px" borderColor={borderColor} shadow="sm">
       <Flex
@@ -43,6 +46,7 @@ export default function QuoteExtraInfoSection({ inputBg, borderColor }) {
                 bg={inputBg}
                 placeholder="例: 簽約 30% 完工 60% 驗收 10%"
                 borderRadius="xl"
+                { ...register("paymentTerms") }
               />
             </Box>
 
@@ -54,15 +58,24 @@ export default function QuoteExtraInfoSection({ inputBg, borderColor }) {
                 bg={inputBg}
                 placeholder="請輸入備註"
                 borderRadius="xl"
+                { ...register("note") }
               />
             </Box>
 
             <Box p={1}>
-              <CustomCheckbox
-                label="是否顯示簽章欄位"
-                variant="outline"
-                colorPalette="cyan"
-                defaultChecked={true}
+              <Controller
+                  name="displaySignature"
+                  control={control}
+                  render={({ field: { value, onChange, ...field} }) => (
+                      <CustomCheckbox
+                          label="是否顯示簽章欄位"
+                          variant="outline"
+                          colorPalette="cyan"
+                          checked={value}
+                          onCheckedChange={(details) => onChange(details.checked)}
+                          {...field}
+                      />
+                  )}
               />
             </Box>
           </SimpleGrid>
