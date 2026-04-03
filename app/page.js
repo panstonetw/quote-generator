@@ -7,7 +7,7 @@ import {
     HStack,
     VStack,
     SimpleGrid,
-    Tabs,
+    Tabs
 } from '@chakra-ui/react';
 import QuotePageHeader from "@/components/quote/QuotePageHeader";
 import QuotePreviewPanel from "@/components/quote/QuotePreviewPanel";
@@ -20,6 +20,7 @@ export default function QuoteGeneratorChakra() {
     const [displayPreview, setDisplayPreview] = useState(true);
     const methods = useForm({
         defaultValues: {
+            items: [{ category: '', name: '', price: 0, quantity: 1, amount: 0 }],
             displaySignature: true
         }
     });

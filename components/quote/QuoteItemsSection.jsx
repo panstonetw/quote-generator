@@ -11,13 +11,19 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Copy, DollarSign, Plus, Trash2 } from "lucide-react";
+import { DollarSign, Plus } from "lucide-react";
 import { LuShoppingCart } from "react-icons/lu";
-import { FloatingInput } from "@/components/form/FloatingInput";
 import { CustomNumberInput } from "@/components/form/CustomNumberInput";
-import { CustomTooltip } from "@/components/text/CustomTooltip";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { QuoteItem } from "@/components/quote/QuoteItem";
 
 export default function QuoteItemsSection({ borderColor }) {
+  const { control   } = useFormContext();
+  const { fields } = useFieldArray({
+    control,
+    name: "items",
+  });
+
   return (
     <Box mt={2} borderRadius="2xl" border="1px" borderColor={borderColor} shadow="sm">
       <Flex
@@ -42,53 +48,11 @@ export default function QuoteItemsSection({ borderColor }) {
       </Flex>
 
       <Box p={6} overflowX="auto">
-        <HStack gap={4} alignItems="flex-start">
-          <FloatingInput label="類別" width="150px" />
+        { fields.map((field, index) => (
+            <QuoteItem key={field.id} index={index}  />
+        )) }
 
-          <FloatingInput
-            label="項目"
-            width="100px"
-            errorText="項目名稱不得為空"
-            invalid
-          />
-
-          <FloatingInput
-            label="單價"
-            width="100px"
-            errorText="單價不得為空"
-            invalid
-          />
-
-          <FloatingInput label="數量" width="80px" defaultValue={1} />
-
-          {/* <FloatingInput label="單位" width="100px" /> */}
-
-          <FloatingInput label="金額" width="120px" value={0} disabled />
-
-          <HStack>
-            <CustomTooltip
-              trigger={
-                <Button size="sm" variant="outline" colorPalette="cyan">
-                  <Copy />
-                </Button>
-              }
-              content="複製"
-            />
-
-            <CustomTooltip
-              trigger={
-                <Button size="sm" variant="outline" colorPalette="red">
-                  <Trash2 />
-                </Button>
-              }
-              content="刪除"
-            />
-
-            <Separator />
-          </HStack>
-        </HStack>
-
-        <HStack alignItems="flex-start" justifyContent="space-between">
+        <HStack mt={4} alignItems="flex-start" justifyContent="space-between">
           <Stack gap="4" width="50%">
             {/* 折扣設定 */}
             <Box>
