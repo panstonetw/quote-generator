@@ -31,7 +31,7 @@ export default function QuoteItemsSection({ borderColor }) {
       const { id, ...rest } = item;
       insert(fields.length, rest);
     } else {
-      insert(fields.length, { category: '', itemName: '' , price: 0, quantity: 1, amount: 0 });
+      insert(fields.length, { category: '', name: '' , price: 0, quantity: 1, amount: 0 });
     }
   }
 
