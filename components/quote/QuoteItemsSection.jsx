@@ -20,7 +20,7 @@ import { QuoteItem } from "@/components/quote/QuoteItem";
 
 export default function QuoteItemsSection({ borderColor }) {
   const { control, getValues   } = useFormContext();
-  const { fields, insert } = useFieldArray({
+  const { fields, insert, remove } = useFieldArray({
     control,
     name: "items",
   });
@@ -32,6 +32,12 @@ export default function QuoteItemsSection({ borderColor }) {
       insert(fields.length, rest);
     } else {
       insert(fields.length, { category: '', name: '' , price: 0, quantity: 1, amount: 0 });
+    }
+  }
+
+  const removeItem = (index) => {
+    if (fields.length > 1) {
+      remove(index);
     }
   }
 
@@ -61,7 +67,7 @@ export default function QuoteItemsSection({ borderColor }) {
       <Box p={6} overflowX="auto">
         <VStack align="stretch" gap={4}>
           { fields.map((field, index) => (
-              <QuoteItem key={field.id} index={index} handleCopy={addItem} />
+              <QuoteItem key={field.id} index={index} handleCopy={addItem} handleRemove={removeItem} />
           )) }
 
           <HStack alignItems="flex-start" justifyContent="space-between">
