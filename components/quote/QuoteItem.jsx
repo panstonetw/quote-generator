@@ -5,7 +5,7 @@ import { CustomTooltip } from "@/components/text/CustomTooltip";
 import { Copy, Trash2 } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
-export const QuoteItem = ({ index, handleCopy }) => {
+export const QuoteItem = ({ index, handleCopy, handleRemove }) => {
     const { register, formState: { errors } } = useFormContext();
     return (
         <HStack gap={4} alignItems="flex-start">
@@ -41,7 +41,7 @@ export const QuoteItem = ({ index, handleCopy }) => {
 
                 <CustomTooltip
                     trigger={
-                        <Button size="sm" variant="outline" colorPalette="red">
+                        <Button size="sm" variant="outline" colorPalette="red" onClick={() => handleRemove(index)}>
                             <Trash2 />
                         </Button>
                     }
