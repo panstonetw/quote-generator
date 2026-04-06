@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FloatingInput } from "@/components/form/FloatingInput";
 import { Button, HStack, Separator } from "@chakra-ui/react";
 import { CustomTooltip } from "@/components/text/CustomTooltip";
@@ -9,6 +9,7 @@ export const QuoteItem = ({ index, handleCopy, handleRemove }) => {
     const {
         register,
         control,
+        setValue,
         formState: { errors }
     } = useFormContext();
 
@@ -18,6 +19,10 @@ export const QuoteItem = ({ index, handleCopy, handleRemove }) => {
     });
 
     const amount = (Number(price) || 0) * (Number(quantity) || 0);
+
+    useEffect(() => {
+        setValue(`items.${index}.amount`, amount);
+    }, [amount, index, setValue]);
 
     return (
         <HStack gap={4} alignItems="flex-start">
