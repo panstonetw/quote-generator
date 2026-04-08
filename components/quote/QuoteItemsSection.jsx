@@ -40,12 +40,14 @@ export default function QuoteItemsSection({ borderColor }) {
   }, [items]);
 
 
-  const discountValue =
-    discountType === 'fixed'
-      ? Math.min(Number(discount) || 0, subTotalAmt)
-      : subTotalAmt * ((Number(discount) || 0) / 100);
+  const discountNumber = Number(discount) || 0;
 
-  const finalTotalAmt = subTotalAmt - discountValue;
+  const finalTotalAmt =
+    discountType === 'fixed'
+      ? subTotalAmt - Math.min(discountNumber, subTotalAmt)
+      : subTotalAmt * (discountNumber / 10);
+
+  const discountValue = subTotalAmt - finalTotalAmt;
 
   const addItem = (index) => {
     const item = getValues(`items.${index}`);
@@ -104,14 +106,18 @@ export default function QuoteItemsSection({ borderColor }) {
                   <NativeSelect.Root width="150px">
                     <NativeSelect.Field {...register('discountType')}>
                       <option value="fixed">固定金額</option>
-                      <option value="percent">百分比</option>
+                      <option value="percent">折數</option>
                     </NativeSelect.Field>
                   </NativeSelect.Root>
 
                   <CustomNumberInput
                       defaultValue={0}
                       min={0}
-                      startElement={<DollarSign size={16} />}
+                      startElement={
+                        discountType === 'fixed'
+                          ? <DollarSign size={16} />
+                          : undefined
+                      }
                       {...register('discount')}
                   />
                 </HStack>
@@ -146,7 +152,7 @@ export default function QuoteItemsSection({ borderColor }) {
                 <>
                   <HStack justifyContent="space-between">
                     <Text color="gray.500">
-                      { discountType === 'fixed' ? '折扣' : `折扣 (${discount}%)` }
+                      { discountType === 'fixed' ? '折扣' : `折扣 (${discount}折)` }
                     </Text>
                     <Text fontWeight="bold" fontSize="lg">
                       -$ {discountValue.toLocaleString()}
