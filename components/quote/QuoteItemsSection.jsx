@@ -7,6 +7,7 @@ import {
   Heading,
   HStack,
   NativeSelect,
+  RadioGroup,
   Separator,
   Stack,
   Text,
@@ -15,20 +16,21 @@ import {
 import { DollarSign, Plus } from "lucide-react";
 import { LuShoppingCart } from "react-icons/lu";
 import { CustomNumberInput } from "@/components/form/CustomNumberInput";
-import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { QuoteItem } from "@/components/quote/QuoteItem";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { FloatingInput } from "@/components/form/FloatingInput";
 
 export default function QuoteItemsSection({ borderColor }) {
-  const { register, control, getValues } = useFormContext();
+  const { register, control, getValues, setValue } = useFormContext();
   const { fields, insert, remove } = useFieldArray({
     control,
     name: "items",
   });
 
-  const [items, discountType, discount] = useWatch({
+  const [items, discountType, discount, taxType, otherTaxType, taxRate, taxInclude] = useWatch({
     control,
-    name: ['items', 'discountType', 'discount']
+    name: ['items', 'discountType', 'discount', 'taxType', 'otherTaxType', 'taxRate', 'taxInclude']
   });
 
   const subTotalAmt = useMemo(() => {
@@ -42,12 +44,35 @@ export default function QuoteItemsSection({ borderColor }) {
 
   const discountNumber = Number(discount) || 0;
 
-  const finalTotalAmt =
-    discountType === 'fixed'
-      ? subTotalAmt - Math.min(discountNumber, subTotalAmt)
-      : subTotalAmt * (discountNumber / 10);
+  const discountAfterAmt =
+      discountType === 'fixed'
+          ? subTotalAmt - Math.min(discountNumber, subTotalAmt)
+          : subTotalAmt * (discountNumber > 10 ? discountNumber / 100 : discountNumber / 10);
 
-  const discountValue = subTotalAmt - finalTotalAmt;
+  const discountValue = subTotalAmt - discountAfterAmt;
+
+  const taxTypes = ['免稅 (0%)', '營業稅 (5%)', '二代健保 (2.11%)', '自訂稅率'];
+
+  const taxAmt = Math.round(discountAfterAmt * (taxRate / 100));
+
+  const finalTotalAmt = discountAfterAmt + (taxInclude === 'true' ? 0 : taxAmt);
+
+  useEffect(() => {
+    if (taxType !== '3') {
+      setValue('otherTaxType', '');
+    }
+    switch (taxType) {
+      case '1':
+        setValue('taxRate', 5);
+        break;
+      case '2':
+        setValue('taxRate', 2.11);
+        break;
+      default:
+        setValue('taxRate', 0);
+        break;
+    }
+  }, [taxType]);
 
   const addItem = (index) => {
     const item = getValues(`items.${index}`);
@@ -95,7 +120,7 @@ export default function QuoteItemsSection({ borderColor }) {
           )) }
 
           <HStack alignItems="flex-start" justifyContent="space-between">
-            <Stack gap="4" width="50%">
+            <Stack gap="4" width="60%">
               {/* 折扣設定 */}
               <Box>
                 <Text fontSize="sm" fontWeight="bold" mb="2">
@@ -123,26 +148,84 @@ export default function QuoteItemsSection({ borderColor }) {
                 </HStack>
               </Box>
 
+              { (taxType && taxType !== '0') &&
+                  <Box>
+                    <Text fontSize="sm" fontWeight="bold" mb="2">
+                      計算方式
+                    </Text>
+
+                    <Controller
+                        name="taxInclude"
+                        control={control}
+                        render={({ field }) => (
+                            <RadioGroup.Root variant='subtle' colorPalette='cyan' {...field}>
+                              <HStack>
+                                <RadioGroup.Item value='false'>
+                                  <RadioGroup.ItemHiddenInput />
+                                  <RadioGroup.ItemIndicator />
+                                  <RadioGroup.ItemText>未稅 ( 稅金另加 )</RadioGroup.ItemText>
+                                </RadioGroup.Item>
+
+                                <RadioGroup.Item value='true'>
+                                  <RadioGroup.ItemHiddenInput />
+                                  <RadioGroup.ItemIndicator />
+                                  <RadioGroup.ItemText>含稅 ( 價格已含稅 )</RadioGroup.ItemText>
+                                </RadioGroup.Item>
+                              </HStack>
+                            </RadioGroup.Root>
+                        )}
+                    />
+                  </Box>
+              }
+
+
               {/* 稅別 */}
               <Box>
                 <Text fontSize="sm" fontWeight="bold" mb="2">
                   稅別
                 </Text>
 
-                <NativeSelect.Root>
-                  <NativeSelect.Field placeholder="請選擇稅別">
-                    <option value="taxed">應稅</option>
-                    <option value="zero">零稅率</option>
-                    <option value="exempt">免稅</option>
-                  </NativeSelect.Field>
-                </NativeSelect.Root>
+                { taxType !== '3' ?
+                    <NativeSelect.Root>
+                      <NativeSelect.Field placeholder="請選擇稅別" {...register('taxType')}>
+                        { taxTypes.map((item, index) => (
+                            <option key={index} value={index}>{item}</option>
+                        )) }
+                      </NativeSelect.Field>
+                    </NativeSelect.Root>
+                    :
+                    <HStack>
+                      <NativeSelect.Root w={130}>
+                        <NativeSelect.Field placeholder="請選擇稅別" {...register('taxType')}>
+                          { taxTypes.map((item, index) => (
+                              <option key={index} value={index}>{item}</option>
+                          )) }
+                        </NativeSelect.Field>
+                      </NativeSelect.Root>
+                      <Box>
+                        <FloatingInput
+                            label="稅別"
+                            width={130}
+                            {...register('otherTaxType')}
+                        />
+                      </Box>
+                      <Box>
+                        <FloatingInput
+                            label="稅率"
+                            width={100}
+                            {...register('taxRate')}
+                        />
+                      </Box>
+                    </HStack>
+                }
+
               </Box>
             </Stack>
 
             {/* 右側金額統計 */}
             <Stack width="200px" gap="4" textAlign="right">
               <HStack justifyContent="space-between">
-                <Text color="gray.500">小計</Text>
+                <Text color="gray.500">小計 { taxInclude === 'true' ? '(含稅)' : '' }</Text>
                 <Text fontWeight="bold" fontSize="lg">
                   $ {subTotalAmt.toLocaleString()}
                 </Text>
@@ -161,12 +244,23 @@ export default function QuoteItemsSection({ borderColor }) {
                   <HStack justifyContent="space-between">
                     <Text color="gray.500">折扣後</Text>
                     <Text fontWeight="bold" fontSize="lg">
-                      $ {finalTotalAmt.toLocaleString()}
+                      $ {discountAfterAmt.toLocaleString()}
                     </Text>
                   </HStack>
                 </>
               }
 
+              { taxType &&
+                  <HStack justifyContent="space-between">
+                    <Text color="gray.500">
+                      { (taxInclude === 'true' ? '含 ' : '') +
+                          (otherTaxType ? (otherTaxType + (taxRate ? ` (${taxRate}%)` : '')) : taxTypes[taxType]) }
+                    </Text>
+                    <Text fontWeight="bold" fontSize="lg">
+                      $ { taxAmt.toLocaleString() }
+                    </Text>
+                  </HStack>
+              }
 
               <Separator />
 

@@ -21,7 +21,8 @@ export default function QuoteGeneratorChakra() {
     const methods = useForm({
         defaultValues: {
             items: [{ category: '', name: '', price: 0, quantity: 1, amount: 0 }],
-            displaySignature: true
+            taxInclude: 'false',
+            displaySignature: 'true'
         }
     });
 
