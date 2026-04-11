@@ -18,6 +18,7 @@ import { CustomNumberInput } from "@/components/form/CustomNumberInput";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { QuoteItem } from "@/components/quote/QuoteItem";
 import { useMemo } from "react";
+import { FloatingInput } from "@/components/form/FloatingInput";
 
 export default function QuoteItemsSection({ borderColor }) {
   const { register, control, getValues } = useFormContext();
@@ -26,9 +27,9 @@ export default function QuoteItemsSection({ borderColor }) {
     name: "items",
   });
 
-  const [items, discountType, discount] = useWatch({
+  const [items, discountType, discount, taxType] = useWatch({
     control,
-    name: ['items', 'discountType', 'discount']
+    name: ['items', 'discountType', 'discount', 'taxType']
   });
 
   const subTotalAmt = useMemo(() => {
@@ -48,6 +49,8 @@ export default function QuoteItemsSection({ borderColor }) {
       : subTotalAmt * (discountNumber / 10);
 
   const discountValue = subTotalAmt - finalTotalAmt;
+
+  const taxTypes = ['免稅 (0%)', '營業稅 (5%)', '二代健保 (2.11%)', '自訂稅率'];
 
   const addItem = (index) => {
     const item = getValues(`items.${index}`);
@@ -99,7 +102,8 @@ export default function QuoteItemsSection({ borderColor }) {
             align="flex-start"
             justify="space-between"
           >
-            <Stack gap="4" width={{ base: "100%", lg: "50%" }}>              {/* 折扣設定 */}
+            <Stack gap="4" width={{ base: "100%", lg: "60%" }}>
+              {/* 折扣設定 */}
               <Box>
                 <Text fontSize="sm" fontWeight="bold" mb="2">
                   折扣設定
@@ -132,13 +136,38 @@ export default function QuoteItemsSection({ borderColor }) {
                   稅別
                 </Text>
 
-                <NativeSelect.Root>
-                  <NativeSelect.Field placeholder="請選擇稅別">
-                    <option value="taxed">應稅</option>
-                    <option value="zero">零稅率</option>
-                    <option value="exempt">免稅</option>
-                  </NativeSelect.Field>
-                </NativeSelect.Root>
+                { taxType !== '3' ?
+                    <NativeSelect.Root>
+                      <NativeSelect.Field placeholder="請選擇稅別" {...register('taxType')}>
+                        { taxTypes.map((item, index) => (
+                            <option key={index} value={index}>{item}</option>
+                        )) }
+                      </NativeSelect.Field>
+                    </NativeSelect.Root>
+                    :
+                    <Stack direction={{ base: 'column', md: 'row' }} gap={2}>
+                      <NativeSelect.Root w={{ base: 'full', md: '130px' }}>
+                        <NativeSelect.Field placeholder="請選擇稅別" {...register('taxType')}>
+                          { taxTypes.map((item, index) => (
+                              <option key={index} value={index}>{item}</option>
+                          )) }
+                        </NativeSelect.Field>
+                      </NativeSelect.Root>
+                      <HStack gap={2} flex={1}>
+                        <FloatingInput
+                            label="稅別"
+                            width={130}
+                            {...register('otherTaxType')}
+                        />
+                        <FloatingInput
+                            label="稅率"
+                            width={100}
+                            {...register('taxRate')}
+                        />
+                      </HStack>
+
+                    </Stack>
+                }
               </Box>
             </Stack>
 
@@ -174,6 +203,14 @@ export default function QuoteItemsSection({ borderColor }) {
                 </>
               }
 
+              { taxType &&
+                <HStack justifyContent="space-between">
+                  <Text color="gray.500">{taxTypes[taxType]}</Text>
+                  <Text fontWeight="bold" fontSize="lg">
+                    $ 0
+                  </Text>
+                </HStack>
+              }
 
               <Separator />
 
