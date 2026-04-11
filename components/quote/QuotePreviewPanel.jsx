@@ -5,6 +5,7 @@ import {
   Flex,
   Heading,
   HStack,
+  Stack,
   Link,
   Separator,
   SimpleGrid,
@@ -92,9 +93,53 @@ export default function QuotePreviewPanel({ columns, data, borderColor }) {
             <Text>2026-03-17</Text>
           </SimpleGrid>
 
-          <Box borderRadius="xl" border="1px" borderColor="gray.200" overflow="hidden">
+          {/* 桌面版表格 */}
+          <Box
+            display={{ base: "none", md: "block" }}
+            borderRadius="xl"
+            border="1px"
+            borderColor="gray.200"
+            overflow="hidden"
+          >
             <CustomTable columns={columns} data={data} />
           </Box>
+
+          {/* 手機版卡片 */}
+          <Stack display={{ base: "flex", md: "none" }} gap={3}>
+            {data.map((item, index) => (
+              <Box
+                key={index}
+                border="1px"
+                borderColor="gray.200"
+                borderRadius="xl"
+                p={4}
+                bg="white"
+              >
+                <Text fontWeight="bold" mb={2}>
+                  {item.item}
+                </Text>
+
+                <Stack gap={1} fontSize="sm">
+                  <HStack justify="space-between">
+                    <Text color="gray.500">類別</Text>
+                    <Text>{item.category || "-"}</Text>
+                  </HStack>
+                  <HStack justify="space-between">
+                    <Text color="gray.500">單價</Text>
+                    <Text>{item.price}</Text>
+                  </HStack>
+                  <HStack justify="space-between">
+                    <Text color="gray.500">數量</Text>
+                    <Text>{item.quantity}</Text>
+                  </HStack>
+                  <HStack justify="space-between">
+                    <Text color="gray.500">金額</Text>
+                    <Text fontWeight="semibold">{item.amount}</Text>
+                  </HStack>
+                </Stack>
+              </Box>
+            ))}
+          </Stack>
 
           <Text mt={4} textAlign="right" fontSize="lg" fontWeight="bold">
             未稅：<Text as="span" color="red.600">NT$ 48,000 元</Text>
